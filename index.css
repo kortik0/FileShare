@@ -1,0 +1,102 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+.root{
+}
+
+.title {
+    font-size: 120%;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    background: #80A1D4;
+}
+
+.title > h1 {
+    margin: 40px 0;
+    color: #2A4F8A;
+}
+
+.inputDIV {
+    user-select: none;
+    width: 100vw;
+    background: #5687C8;
+    padding: 20px;
+    position: relative;
+}
+
+.inputLabel {
+    font-size: 150%;
+
+    cursor: pointer;
+    margin-right: 20px;
+    padding: 10px;
+    color: #e0e0e0;
+    border-radius: 5px;
+    border: 1px solid #c8c8c8;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.input {
+    width: 0;
+    opacity: 0;
+    height: 0;
+    outline: none;
+    border: none;
+}
+
+.posts {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100vw;
+}
+
+.posts > .post {
+    position: relative;
+    margin: 5px 10px;
+}
+
+.text > p {
+    font-size: .9rem;
+    z-index: 1;
+    padding: 10px;
+    text-align: center;
+    color: #e0e0e0;
+    position: absolute;
+    top: 80%;
+    bottom: 2%;
+    left: 0;
+    right: 0;
+    word-break: break-all;
+    white-space: nowrap;
+}
+
+.post > a {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.text:after {
+    content: '';
+    filter: blur(1px);
+    background: black;
+    position: absolute;
+    top: 80%;
+    bottom: 2%;
+    left: 0;
+    right: 0;
+}
+
+.image {
+    cursor: pointer;
+    width: 300px;
+    height: 200px;
+    object-fit: cover;
+}
