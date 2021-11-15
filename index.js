@@ -1,4 +1,5 @@
 import {initializeApp} from 'firebase/app'
+import axios from 'axios'
 
 const firebaseConfig = {
     apiKey: "",
@@ -43,10 +44,11 @@ const uploadToStorage = (files) => {
             console.log(snapshot);
         });
     })
+    return getUUID
 }
 
-const getAllFromFolder = async () => {
-    const filePath = `images/d3d0afa2-877e-4915-bab4-4311600cd48c/`
+const getAllFromFolder = async (id) => {
+    const filePath = `images/${id}/`
     const filesURL = []
 
     await list(ref(storage, filePath)).then(r => r.items.forEach(item => {
@@ -56,21 +58,31 @@ const getAllFromFolder = async () => {
     return filesURL
 }
 
-const downloadFromStorage = async () => {
-    const image = document.querySelector('.posts')
-    const files = await getAllFromFolder()
+const downloadFromStorage = async (id) => {
+    console.log(!id.length)
+    if (!id.length) {
+        id = 'testFolder'
+    }
 
-    files.forEach(item => {
-        getDownloadURL(ref(storage, item)).then(response => image.insertAdjacentHTML(
+    console.log(id)
+
+    const image = document.querySelector('.posts')
+    const files = await getAllFromFolder(id)
+
+   await files.forEach(item => {
+        getDownloadURL(ref(storage, item)).then(async (response) => image.insertAdjacentHTML(
             'beforeend',
             `<div class="post">
                     <img class="image" src="${response}" alt="expected image">
-                    <a href="${response}" download></a>
+                    <a href="${await axios.get(response, {
+                        responseType: 'blob'
+                    }).then(answer => {
+                        return URL.createObjectURL(new Blob([answer.data]))
+                    })}" download="${uuidv4()}.jpg"></a>
                     <div class="text"><p>${uuidv4()}</p></div>
                   </div>`
         ))
     })
-    //Make download logic!
 }
 
 /**
@@ -80,6 +92,7 @@ const downloadFromStorage = async () => {
  * */
 
 const chooseFile = () => {
+    const bodyRoot = document.querySelector('.root')
     const input = document.querySelector('#inputData')
     const uploadButton = document.querySelector('#uploadData')
     const downloadButton = document.querySelector('#downloadData')
@@ -113,18 +126,41 @@ const chooseFile = () => {
     }
 
     const serverUpload = () => {
+        const id = document.querySelector('.identifier')
         if (!files.length) {
             console.error('Files section empty. Cancel operation')
             return
         }
 
-        uploadToStorage(files)
+        const response = uploadToStorage(files)
+        id.innerHTML = `Your ID section: ${response}`
         imageHolder.innerHTML = ''
         files = []
     }
 
     const serverDownload = () => {
-        downloadFromStorage()
+        bodyRoot.insertAdjacentHTML('beforeend',
+    `<div class="Backdrop">
+                <div class="form">
+                    <div class="inputHolder">
+                        <input class="inputRepos" type="text" placeholder="Insert id of repo"/>
+                    </div>
+                    <div class="buttonHolder">
+                        <button class="submitBtn">Search repository</button>
+                    </div>
+                </div>
+           </div>`
+        )
+
+        const btn = bodyRoot.querySelector('.submitBtn')
+        btn.addEventListener('click', () => downloadFromStorage(bodyRoot.querySelector('.inputRepos').value))
+
+        bodyRoot.querySelector('.Backdrop').addEventListener('click', (e) => {
+            const element = e.target
+            if (element.classList.contains('Backdrop')) {
+                return element.parentNode.removeChild(element)
+            }
+        })
     }
 
     uploadButton.addEventListener('click', serverUpload)

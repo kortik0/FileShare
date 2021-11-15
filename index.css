@@ -6,6 +6,8 @@
 }
 
 .root{
+    position: relative;
+    height: 100vh;
 }
 
 .title {
@@ -99,4 +101,41 @@
     width: 300px;
     height: 200px;
     object-fit: cover;
+}
+
+.identifier {
+    top: 40%;
+    position: absolute;
+    user-select: text;
+    display: flex;
+    color: #e0e0e0;
+    justify-content: flex-end;
+    right: 20%;
+}
+
+.Backdrop {
+    z-index: 9999999;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.form {
+    background: #faf7f7;
+    position: relative;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    top: 50%;
+    width: 40%;
+    flex-direction: column;
+    padding: 10px;
+    margin-left: 30%;
+}
+
+.inputHolder {
+    margin: 10px;
 }
