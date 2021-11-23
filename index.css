@@ -69,12 +69,12 @@
     text-align: center;
     color: #e0e0e0;
     position: absolute;
-    top: 80%;
+    top: 75%;
     bottom: 2%;
     left: 0;
     right: 0;
     word-break: break-all;
-    white-space: nowrap;
+    white-space: pre-wrap;
 }
 
 .post > a {

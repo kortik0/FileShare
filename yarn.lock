@@ -730,6 +730,11 @@
   dependencies:
     "@types/node" "*"
 
+"@zip.js/zip.js@^2.3.19":
+  "integrity" "sha512-dkqAdsgJPq7cR4iP5oIdI6Zu75WZka1L02NCYxdoXydsdNLO37A5YbBrVurTq5FxHDQRaH7S86rHdlxVeUl/dA=="
+  "resolved" "https://registry.npmjs.org/@zip.js/zip.js/-/zip.js-2.3.19.tgz"
+  "version" "2.3.19"
+
 "abbrev@1":
   "integrity" "sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q=="
   "resolved" "https://registry.npmjs.org/abbrev/-/abbrev-1.1.1.tgz"

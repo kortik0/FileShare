@@ -1,13 +1,11 @@
 import {initializeApp} from 'firebase/app'
 import axios from 'axios'
+import * as zip from '@zip.js/zip.js'
+import config from './config/appConfig.json'
+import {getDownloadURL, getStorage, list, ref, uploadBytes} from "firebase/storage";
 
 const firebaseConfig = {
-    apiKey: "",
-    authDomain: "",
-    projectId: "",
-    storageBucket: "",
-    messagingSenderId: "",
-    appId: ""
+    ...config
 };
 
 initializeApp(firebaseConfig);
@@ -29,25 +27,21 @@ const uuidv4 = () => {
  * and be moved to another file
  * I am to lazy to do this now!
  **/
-
-import { getStorage, ref, uploadBytes, list, getDownloadURL} from "firebase/storage";
 const storage = getStorage();
 
 const uploadToStorage = (files) => {
     const getUUID = uuidv4()
     const filePath = `images/${getUUID}/`
-    console.log(getUUID)
     files.forEach(file => {
         const fileRef = ref(storage,`${filePath}/${file.name}`)
-        uploadBytes(fileRef, file).then((snapshot) => {
+        uploadBytes(fileRef, file).then(() => {
             console.log('Uploaded a blob or file!');
-            console.log(snapshot);
         });
     })
     return getUUID
 }
 
-const getAllFromFolder = async (id) => {
+const getPathToFirebaseFolder = async (id) => {
     const filePath = `images/${id}/`
     const filesURL = []
 
@@ -67,9 +61,9 @@ const downloadFromStorage = async (id) => {
     console.log(id)
 
     const image = document.querySelector('.posts')
-    const files = await getAllFromFolder(id)
+    const files = await getPathToFirebaseFolder(id)
 
-   await files.forEach(item => {
+   files.forEach(item => {
         getDownloadURL(ref(storage, item)).then(async (response) => image.insertAdjacentHTML(
             'beforeend',
             `<div class="post">
@@ -83,6 +77,37 @@ const downloadFromStorage = async (id) => {
                   </div>`
         ))
     })
+
+    const zipWriter = new zip.ZipWriter(new zip.Data64URIWriter("application/zip"))
+
+    const getData = async () => {
+        try {
+            const filesURL = await axios.all(files.map(item => getDownloadURL(ref(storage, item))))
+            return await axios.all(filesURL.map(item => axios.get(item, {responseType: "blob"})))
+        } catch (e) {
+            throw new Error(e)
+        }
+    }
+
+    const data = await getData()
+
+    const adderToZip = async (dataItem) => {
+        await zipWriter.add(`${uuidv4()}.jpg`, new zip.BlobReader(dataItem))
+    }
+
+    await Promise.all(data.map(async (item) => await adderToZip(item.data)))
+
+    const dataURI = await zipWriter.close()
+    crutch(dataURI)
+    //TEST DATA: 54c140e9-45ba-4a06-82da-843eef233b82
+}
+
+//TODO: Write normaly
+const crutch = (href) => {
+    const a = document.createElement("a")
+    a.href = href
+    a.download = `test.zip`
+    a.click()
 }
 
 /**
@@ -133,7 +158,7 @@ const chooseFile = () => {
         }
 
         const response = uploadToStorage(files)
-        id.innerHTML = `Your ID section: ${response}`
+        id.innerHTML = `Your ID section: <p style="user-select: all">${response}</p>`
         imageHolder.innerHTML = ''
         files = []
     }

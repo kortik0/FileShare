@@ -12,6 +12,7 @@
     "snowpack": "^3.8.8"
   },
   "dependencies": {
+    "@zip.js/zip.js": "^2.3.19",
     "axios": "^0.24.0",
     "firebase": "^9.2.0"
   }
