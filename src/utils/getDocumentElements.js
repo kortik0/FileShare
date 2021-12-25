@@ -4,5 +4,5 @@ export const allElements = {
     uploadButton: document.querySelector('#uploadData'),
     downloadButton: document.querySelector('#downloadData'),
     imageHolder: document.querySelector('.posts'),
-    zipArea: document.querySelector('.zipPostDownload')
+    zipArea: document.querySelector('.zipPostDownload'),
 }

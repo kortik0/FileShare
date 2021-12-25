@@ -3,11 +3,12 @@ import {uuidv4} from "../utils/uuid";
 import axios from "axios";
 import * as zip from "@zip.js/zip.js";
 import {crutch} from "../utils/zipDownload";
-import {default as initializeApp, firebaseConfig} from "./initializeFirebase";
+import {allElements} from "../utils/getDocumentElements";
+import {initializer} from "./initializeFirebase";
+
+initializer()
 
 const storage = getStorage();
-
-console.log(firebaseConfig, initializeApp)
 
 
 export const uploadToStorage = (files) => {
@@ -22,18 +23,20 @@ export const uploadToStorage = (files) => {
     return getUUID
 }
 
-export const downloadFromStorage = async (id) => {
+export const downloadFromStorage = async (id, isZip) => {
+    console.log(id)
     if (!id.length) {
         id = 'testFolder'
     }
 
     console.log(id)
 
-    const image = document.querySelector('.posts')
+    allElements.imageHolder.innerHTML = ''
+
     const files = await getPathToFirebaseFolder(id)
 
     files.forEach(item => {
-        getDownloadURL(ref(storage, item)).then(async (response) => image.insertAdjacentHTML(
+        getDownloadURL(ref(storage, item)).then(async (response) => allElements.imageHolder.insertAdjacentHTML(
             'beforeend',
             `<div class="post">
                     <img class="image" src="${response}" alt="expected image">
@@ -67,7 +70,12 @@ export const downloadFromStorage = async (id) => {
     await Promise.all(data.map(async (item) => await adderToZip(item.data)))
 
     const dataURI = await zipWriter.close()
-    crutch(dataURI)
+
+    console.log(isZip)
+
+    if (isZip) {
+        crutch(dataURI)
+    }
 }
 
 

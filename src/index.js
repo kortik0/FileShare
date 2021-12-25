@@ -48,6 +48,7 @@ const chooseFile = () => {
                 <div class="form">
                     <div class="inputHolder">
                         <input class="inputRepos" type="text" placeholder="Insert id of repo"/>
+                        <label><input class="checkbox" type="checkbox"> Download as zip</label>
                     </div>
                     <div class="buttonHolder">
                         <button class="submitBtn">Search repository</button>
@@ -56,8 +57,15 @@ const chooseFile = () => {
            </div>`
         )
 
+        const checked = document.querySelector('.checkbox')
+        let isChecked = false
+
+        checked.addEventListener('click', (e) => isChecked = e.target.checked)
+
+        const inputReps = document.body.querySelector('.inputRepos')
+
         const btn = allElements.bodyRoot.querySelector('.submitBtn')
-        btn.addEventListener('click', () => downloadFromStorage(allElements.bodyRoot.querySelector('.inputRepos').value))
+        btn.addEventListener('click', () => downloadFromStorage(inputReps.value, isChecked))
 
         allElements.bodyRoot.querySelector('.Backdrop').addEventListener('click', (e) => {
             const element = e.target
